@@ -1,0 +1,166 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/header.css" />
+	</head>
+
+	<body>
+		
+		<header class="mui-bar mui-bar-nav title">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+		    <h1 class="mui-title title-color">新朋友</h1>
+		</header>
+		
+		<div class="mui-content">
+			<ul class="mui-table-view" id="ul_friends_request_list" style="margin-bottom: 10px;">
+				
+			</ul>
+		</div>
+		
+		<script src="js/mui.min.js"></script>
+		<script src="js/app.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			
+			mui.plusReady(function() {
+				
+				var user = app.getUserGlobalInfo();
+				
+				// 接收上个页面传过来的对象，加载好友请求记录
+				var thisWebview = plus.webview.currentWebview();
+				var friendRequestList = thisWebview.friendsList;
+				
+				var ul_friends_request_list = document.getElementById("ul_friends_request_list");
+				if (friendRequestList != null && friendRequestList.length > 0) {
+
+					var requestHTML = "";
+					for (var i = 0; i < friendRequestList.length; i++) {
+						requestHTML += renderFriendRequests(friendRequestList[i]);
+					}
+					ul_friends_request_list.innerHTML = requestHTML;
+					
+					// 动态对忽略和通过按钮进行事件绑定
+					mui(".btnOper").on("tap", ".ignoreRequest", function(e) {
+						var friendId = this.getAttribute("friendId");
+						operatorFriendRequest(user.id, friendId, 0);
+					});
+					
+					mui(".btnOper").on("tap", ".passRequest", function(e) {
+						var friendId = this.getAttribute("friendId");
+						operatorFriendRequest(user.id, friendId, 1);
+					});
+				} else {
+					ul_friends_request_list.innerHTML = '<li class="btnOper mui-table-view-cell mui-media">' + 
+					        '<a href="javascript:;">' + 
+				            		'<p class="mui-ellipsis" style="text-align: center;">暂时还没有好友请求呢~</p>' + 
+					        '</a>' + 
+					    '</li>';
+				}
+				
+				// 添加自定义事件，刷新好友请求
+				window.addEventListener("refresh", function(){
+					reloadingFriendRequests();
+					CHAT.init();
+				});
+			});
+			
+			// 操作好友请求
+			function operatorFriendRequest(userId, friendId, operType) {
+				mui.ajax(app.serverUrl + "/u/opreFriendRequest?accpetUserId=" + userId
+							+ "&sendUserId=" + friendId + "&operType=" + operType ,{
+					data:{},
+					dataType: 'json',	// 服务器返回json格式数据
+					type: 'post', 	// HTTP请求类型
+					timeout: 10000, 	// 超时时间设置为10秒
+					headers:{'Content-Type': 'application/json'},
+					success:function(data) {
+						
+						// 更新通讯录
+						var myFriendsList = data.data;
+						app.setContactList(myFriendsList);
+						
+						// 重新加载好友请求记录
+						reloadingFriendRequests();
+					}
+				});
+			}
+			
+			// 用于拼接单个朋友的请求
+			function renderFriendRequests(friend) {
+				var html = "";
+				
+				html = '<li class="btnOper mui-table-view-cell mui-media">' + 
+					        '<a href="javascript:;">' + 
+					            '<img class="mui-media-object mui-pull-left" src="' + app.imgServerUrl + friend.sendheadImage + '" style="border-radius: 8%;line-height: 50px;max-width: 40px;max-height: 40px;"/>' + 
+				            	'<span id="span_nickname" class="mui-pull-right">' + 
+				            		'<button friendId="' + friend.sendUserId + '" type="button" class="ignoreRequest mui-btn mui-btn-grey" style="padding: 4px 10px;margin-right: 5px;margin-top: 5px;">忽略</button>' + 
+				            		'<button friendId="' + friend.sendUserId + '" type="button" class="passRequest mui-btn mui-btn-green" style="padding: 4px 10px;margin-right: 5px;margin-top: 5px;">通过</button>' + 
+				            	'</span>' + 
+				            	'<div class="mui-media-body">' + 
+				            		'<label>' + friend.sendNickname + '</label>' + 
+				            		'<p class="mui-ellipsis">请求添加你为朋友</p>' + 
+				            	'</div>' + 
+					        '</a>' + 
+					    '</li>';
+				
+				return html;
+			};
+			
+			// 加载好友请求记录
+			function reloadingFriendRequests() {
+				// 获取用户全局对象
+				var user = app.getUserGlobalInfo();
+				
+				mui.ajax(app.serverUrl + "/u/queryFriendRequests?userId=" + user.id,{
+					data:{},
+					dataType: 'json',	// 服务器返回json格式数据
+					type: 'post', 	// HTTP请求类型
+					timeout: 10000, 	// 超时时间设置为10秒
+					headers:{'Content-Type': 'application/json'},
+					success:function(data) {
+						// 服务器返回响应
+						if (data.status == 200) {
+							var friendRequestList = data.data;
+							
+							var ul_friends_request_list = document.getElementById("ul_friends_request_list");
+							if (friendRequestList != null && friendRequestList.length > 0) {
+			
+								var requestHTML = "";
+								for (var i = 0; i < friendRequestList.length; i++) {
+									requestHTML += renderFriendRequests(friendRequestList[i]);
+								}
+								ul_friends_request_list.innerHTML = requestHTML;
+								
+								// 动态对忽略和通过按钮进行事件绑定
+								mui(".btnOper").on("tap", ".ignoreRequest", function(e) {
+									var friendId = this.getAttribute("friendId");
+									operatorFriendRequest(user.id, friendId, 0);
+								});
+								
+								// 通过好友请求
+								mui(".btnOper").on("tap", ".passRequest", function(e) {
+									var friendId = this.getAttribute("friendId");
+									operatorFriendRequest(user.id, friendId, 1);
+									
+									// 调用联系人webview的fetchContactList方法动态加载联系人列表
+									var contactWebview = plus.webview.getWebviewById("ichat-contact");
+									contactWebview.evalJS("fetchContactList()");
+								});
+							} else {
+								ul_friends_request_list.innerHTML = "";
+							}
+						} else {
+							app.showToast(data.msg, "error");
+						}
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

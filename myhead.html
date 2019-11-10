@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/header.css" />
+	</head>
+
+	<body>
+		
+		<header class="mui-bar mui-bar-nav title">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+		    <a id="openMenu" class="mui-icon mui-icon-right-nav mui-pull-right" style="color: white;">...</a>
+		    <h1 class="mui-title title-color">个人头像</h1>
+		</header>
+		
+		<div class="mui-content">
+		    <img id="img_myhead" src="css/registLogin/arrow.jpg"/>
+		</div>
+		
+		<!-- 头像菜单 -->
+		<div id="sheet-myhead" class="mui-popover mui-popover-bottom mui-popover-action ">
+		    <!-- 可选择菜单 -->
+		    <ul class="mui-table-view">
+		      <li class="mui-table-view-cell">
+		        <a id="link_choosePhoto" href="#">选择照片</a>
+		      </li>
+		      <li class="mui-table-view-cell">
+		        <a id="link_savePhoto" href="#">下载照片</a>
+		      </li>
+		    </ul>
+		    <!-- 取消菜单 -->
+		    <ul class="mui-table-view">
+		      <li class="mui-table-view-cell">
+		        <a href="#sheet-myhead"><b>取消</b></a>
+		      </li>
+		    </ul>
+		</div>
+		
+		
+		<script src="js/mui.min.js"></script>
+		<script src="js/app.js"></script>
+		<script type="text/javascript">
+			mui.init()
+			
+			mui.plusReady(function() {
+				
+				 refreshHead();
+				 
+				 // 添加自定义事件，刷新头像
+				// 添加自定义事件，刷新头像
+				window.addEventListener("refresh", function(){
+					refreshHead();
+				});
+				 
+				 // 获取手机端可见屏幕的宽度
+				 var imgWidth = document.body.clientWidth;
+				 img_myhead.width = imgWidth;
+				 img_myhead.height = imgWidth;
+				 
+				 // 绑定选择菜单
+				 var openMenu = document.getElementById("openMenu");
+				 openMenu.addEventListener("tap", function() {
+				 	mui("#sheet-myhead").popover("toggle");
+				 });
+				 
+				 // 绑定选择照片的菜单按钮
+				 var link_choosePhoto = document.getElementById("link_choosePhoto");
+				 link_choosePhoto.addEventListener("tap", function() {
+				 	mui.openWindow({
+				 		url: "plugin/v3.1.6/myface-uploader.html", 
+				 		id: "myface-uploader.html",
+				 		createNew: true});
+				 	mui("#sheet-myhead").popover("toggle");
+				 });
+				 
+				 // 绑定保存照片的菜单按钮
+				 var link_savePhoto = document.getElementById("link_savePhoto");
+				 link_savePhoto.addEventListener("tap", function() {
+				 	plus.nativeUI.showWaiting("下载中...");
+				 	
+				 	var user = app.getUserGlobalInfo();
+				 	var headImage = user.headImageBig;
+				 	
+				 	// 下载任务
+				 	var downloadTask = plus.downloader.createDownload(
+				 		app.imgServerUrl + headImage,
+				 		{},
+				 		function(downloadFile, status) {
+				 			
+				 			plus.nativeUI.closeWaiting();
+				 			
+				 			if (status == 200) {
+				 				var tempFile = downloadFile.filename;
+				 				
+				 				// 通过相册api保存相册到本地相册
+				 				plus.gallery.save(tempFile, function() {
+				 					app.showToast("保存成功！", "success");
+				 				})
+				 			} else {
+				 				app.showToast("下载错误...", "error");
+//				 				console.log("下载错误...");
+				 			}
+				 		}
+				 	);
+				 	downloadTask.start();
+				 	
+				 });
+			});
+			
+			function refreshHead() {
+				 var user = app.getUserGlobalInfo();
+				 var img_myhead = document.getElementById("img_myhead");
+				 
+				 // 判从内存这种获取用户的全局对象
+				 if (user != null) {
+					var headImage = user.headImageBig;
+					if (app.isNotNull(headImage)) {
+						img_myhead.src = app.imgServerUrl + headImage;
+					}
+				}
+			}
+		</script>
+		
+		
+	</body>
+
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="fonticon/iconfont.css" />
+    <link rel="stylesheet" href="css/header.css" />
+    <script type="text/javascript" charset="utf-8">
+      	mui.init();
+      	
+      	
+      	// 加载自定义标题栏背景
+      	mui.plusReady(function(){
+      		plus.navigator.setStatusBarStyle("light");
+      		plus.navigator.setStatusBarBackground("#031634");
+      	});
+    </script>
+</head>
+<body>
+	
+	<header class="mui-bar mui-bar-nav title">
+	    <h1 id="ichat_title" class="mui-title title-color"><b>漂流瓶</b></h1>
+	</header>
+	
+	<!-- 底部导航栏 -->
+	<nav class="mui-bar mui-bar-tab">
+	    <a class="mui-tab-item mui-active" tabindex="0">
+	        <span class="mui-icon iconfont icon-weixin"></span>
+	        <span class="mui-tab-label">聊天</span>
+	    </a>
+	    <a class="mui-tab-item" tabindex="1">
+	        <span class="mui-icon iconfont icon-tongxunlu"></span>
+	        <span class="mui-tab-label">联系人</span>
+	    </a>
+	    <a class="mui-tab-item" tabindex="2">
+	        <span class="mui-icon iconfont icon-faxianzhinanzhen"></span>
+	        <span class="mui-tab-label">发现</span>
+	    </a>
+	    <a class="mui-tab-item" tabindex="3">
+	        <span class="mui-icon iconfont icon-wo"></span>
+	        <span class="mui-tab-label">我</span>
+	    </a>
+	</nav>
+	
+	<script type="text/javascript">
+		
+		// 将4个页面声明为数组对象
+		var ichatArray = [
+			{
+				pageId: "ichat-chatlist.html",
+				pageUrl: "ichat-chatlist.html"
+			},
+			{
+				pageId: "ichat-contact.html",
+				pageUrl: "ichat-contact.html"
+			},
+			{
+				pageId: "ichat-discover.html",
+				pageUrl: "ichat-discover.html"
+			},
+			{
+				pageId: "ichat-me.html",
+				pageUrl: "ichat-me.html"
+			}
+		];
+		
+		// 子页面样式
+		var ichatStyle = {
+			top: "44px",
+			bottom: "50px"
+		}
+		
+		
+		mui.plusReady(function(){
+			
+			// 重写back方法，禁止android手机返回键返回到登录注册页面
+			mui.back = function() {
+				return false;
+			}
+			
+			// 对网络连接进行事件监听
+			netChangeSwitch();
+			
+			// 获取当前webview对象
+			var indexWebview = plus.webview.currentWebview();
+			
+			// 向当前的主页webview追加子页的4张webview对象
+			for (var i = 0; i < ichatArray.length; i++) {
+				var ichatPage = plus.webview.create(ichatArray[i].pageUrl, ichatArray[i].pageId, ichatStyle);
+				// 隐藏webview窗口
+				ichatPage.hide();
+				// 追加每一个子页面到当前主页面
+				indexWebview.append(ichatPage);
+			}
+			plus.webview.show(ichatArray[0].pageId);
+			
+			// 批量绑定tap事件，展示不同的页面
+			mui(".mui-bar-tab").on("tap", "a", function() {
+				var tabindex = this.getAttribute("tabindex");
+				
+				// 显示点击的tab选项所对应的页面（切换效果）
+				plus.webview.show(ichatArray[tabindex].pageId, "fade-in", 200);
+				
+				// 隐藏其他的不需要的页面
+				for (var i = 0; i < ichatArray.length; i++) {
+					if(i != tabindex) {
+						plus.webview.hide(ichatArray[i].pageId, "fade-out", 200);
+					}
+				}
+			});
+			
+			// 延时加载
+			setTimeout("initData()", "1000");
+			
+		});
+		
+		// 监听网络状态更改
+		function netChangeSwitch(){
+			document.addEventListener("netchange", function() {
+				// 网络状态的获取和判断
+				var connectionStatus = plus.networkinfo.getCurrentType();
+					if (connectionStatus != 0 && connectionStatus != 1) {
+						// 重新打开网络连接
+						var ichat_title = document.getElementById("ichat_title");
+						ichat_title.innerHTML = "<b>漂流瓶</b>";
+					} else {
+						// 关闭网络连接
+						var ichat_title = document.getElementById("ichat_title");
+						ichat_title.innerHTML = "<b>漂流瓶(未连接)</b>";
+					}
+			});
+		}
+		
+		// 预加载
+		function initData() {
+			var ichat_chatlist = document.getElementById("ichat-chatlist.html");
+			mui.fire(ichat_chatlist, "refresh");
+			
+			var ichat_me = document.getElementById("ichat-me.html");
+			mui.fire(ichat_me, "refresh");
+		}
+	</script>
+</body>
+</html>

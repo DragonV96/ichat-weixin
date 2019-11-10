@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<script src="js/mui.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/header.css" />
+		
+		<style>
+			
+			#scanComponent {
+				width: 100%;
+				position: absolute;
+				top: 44px;
+				bottom: 0px;
+				text-align: center;
+				background: black;
+			}
+			
+		</style>
+
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav title" style="position: fixed;">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+		    <h1 class="mui-title title-color"><b id="chatting-nickname">扫一扫</b></h1>
+		</header>
+		
+		<div id="scanComponent">
+		</div>
+		
+		<script type="application/javascript" src="js/app.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			
+			mui.plusReady(function() {
+				//启动扫一扫前延时500ms
+				setTimeout("startScan()", "500");
+			});
+			
+			var scan;
+			function startScan() {
+				
+				var styles = {
+					frameColor: "#DCDCDC",
+					scanbarColor: "#C0C0C0",
+					background: ""
+				}
+				
+				scan = new plus.barcode.Barcode('scanComponent', null, styles);
+				scan.onmarked = onmarked;
+				scan.start();
+			}
+			
+			function onmarked(type, result) {
+				if (type === 0) {
+					var content = result.split("ichat_qrcode:");
+					if (content.length != 2) {
+						mui.alert(result);
+					} else {
+						var friendUsername = content[1];
+						
+						var user = app.getUserGlobalInfo();
+						
+						mui.ajax(app.serverUrl + "/u/search?myUserId=" + user.id
+					 		+ "&friendUsername=" + friendUsername,{
+						data:{},
+						dataType: 'json',	// 服务器返回json格式数据
+						type: 'post', 	// HTTP请求类型
+						timeout: 10000, 	// 超时时间设置为10秒
+						headers:{'Content-Type': 'application/json'},
+						success:function(data) {
+							plus.nativeUI.closeWaiting();
+							
+							if (data.status == 200) {
+								mui.openWindow({
+									url: "searchfriendsResult.html",
+									id: "searchfriendsResult.html",
+									styles: {},
+									extras: {
+										willBeFriend: data.data
+									}
+								});
+							} else {
+								app.showToast(data.msg, "error");
+							}
+						}
+					});
+					}
+				}
+				scan.start();
+			}
+		</script>
+		
+	</body>
+
+</html>
