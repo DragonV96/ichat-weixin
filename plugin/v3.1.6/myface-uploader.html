@@ -90,7 +90,7 @@
 						var user = app.getUserGlobalInfo();
 						console.log(user.id);
 						// 与后端联调
-						mui.ajax(app.serverUrl + "/u/uploadFaceBase64",{
+						mui.ajax(app.serverUrl + "/user/uploadFaceBase64",{
 							data:{
 								userId:user.id,
 								headData:base64Url

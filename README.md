@@ -1,12 +1,14 @@
 <h1><center>跨平台仿微信即时通讯聊天app</center></h1>
 
+如果本项目对你有用，还请在项目右上角点个star，谢谢大佬支持。
+
 # 作品简介
 
-​		本项目采用前后端分离开发，面向restful风格的接口编程。
+本项目采用前后端分离开发，面向restful风格的接口编程。
 
-​		前端可跨平台在android和ios设备上运行，图片服务器用的fastdfs统一管理app内图片，登录以及消息转发服务器采用netty+springboot，快速高效开发的同时，服务能承受大量在线同时进行聊天的后台，采用nginx进行反向转发代理，提高服务器稳定性。
+前端可跨平台在android和ios设备上运行，图片服务器用的fastdfs统一管理app内图片，登录以及消息转发服务器采用netty+springboot，快速高效开发的同时，服务能承受大量在线同时进行聊天的后台，采用nginx进行反向转发代理，提高服务器稳定性。
 
-​		采用docker容器方式部署，隔离开发与测试环境不一致问题。
+采用docker容器方式部署，隔离开发与测试环境不一致问题。
 
 # 涉及技术框架
 
@@ -16,6 +18,8 @@
 - SpringBoot
 - Nginx+FastDFS分布式文件系统
 - Mybatis
+- lombok + slf4j
+- swagger
 
 后端项目：[传送门](https://github.com/DragonV96/ichat-server)
 

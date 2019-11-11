@@ -66,7 +66,7 @@
 						
 						var user = app.getUserGlobalInfo();
 						
-						mui.ajax(app.serverUrl + "/u/search?myUserId=" + user.id
+						mui.ajax(app.serverUrl + "/friends/search?myUserId=" + user.id
 					 		+ "&friendUsername=" + friendUsername,{
 						data:{},
 						dataType: 'json',	// 服务器返回json格式数据

@@ -80,7 +80,7 @@
 					plus.nativeUI.showWaiting("请稍后...");
 					
 					// 与后端联调
-					mui.ajax(app.serverUrl + "/u/addFriendRequest?myUserId=" + meInfo.id
+					mui.ajax(app.serverUrl + "/friends/addFriendRequest?myUserId=" + meInfo.id
 					 		+ "&friendUsername=" + yourFriend.username,{
 						data:{},
 						dataType: 'json',	// 服务器返回json格式数据

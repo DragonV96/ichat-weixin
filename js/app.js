@@ -3,17 +3,17 @@ window.app = {
 	/**
 	 * netty后端服务发布的url地址
 	 */
-	nettyServerUrl: 'ws://192.168.1.4:8088',
+	nettyServerUrl: 'ws://192.168.200.31:8088',
 	
 	/**
 	 * 后端服务发布的url地址
 	 */
-	serverUrl: 'http://192.168.1.4:8080',
+	serverUrl: 'http://192.168.200.31:8080',
 	
 	/**
 	 * 图片服务器的url地址
 	 */
-	imgServerUrl: 'http://192.168.1.158/',
+	imgServerUrl: 'http://192.168.241.130/',
 
 	HEARTBEATMS: 50000,	// 心跳毫秒数
 	KEY: "Cwq+cXsLku9VmJq8MOt4+CmW1NjW0QCe",	// 消息加解密密钥

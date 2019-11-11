@@ -196,7 +196,7 @@
 			function fetchContactList() {
 				var user = app.getUserGlobalInfo();
 				// 查询用户好友列表
-				mui.ajax(app.serverUrl + "/u/myFriends?userId=" + user.id,{
+				mui.ajax(app.serverUrl + "/friends/myFriends?userId=" + user.id,{
 					data:{},
 					dataType: 'json',	// 服务器返回json格式数据
 					type: 'post', 	// HTTP请求类型

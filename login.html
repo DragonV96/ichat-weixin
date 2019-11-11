@@ -113,7 +113,7 @@
 						// 获取每台手机的唯一cid
 						var cid = plus.push.getClientInfo().clientid;
 						// 与后端联调
-						mui.ajax(app.serverUrl + "/u/registOrLogin",{
+						mui.ajax(app.serverUrl + "/user/registOrLogin",{
 							data:{
 								username: username.value,
 								password: txt_password.value,

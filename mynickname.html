@@ -57,7 +57,7 @@
 				plus.nativeUI.showWaiting("请稍后...");
 				
 				// 与后端联调
-				mui.ajax(app.serverUrl + "/u/setNickname",{
+				mui.ajax(app.serverUrl + "/user/setNickname",{
 					data:{
 						userId: user.id,
 						nickname: newNickname

@@ -299,7 +299,7 @@
 				var user = app.getUserGlobalInfo();
 				var msgIds = ",";	//格式： 001,002,003，
 				// 查询用户未签收消息
-				mui.ajax(app.serverUrl + "/u/getUnReadMsgList?acceptUserId=" + user.id,{
+				mui.ajax(app.serverUrl + "/chat/getUnReadMsgList?acceptUserId=" + user.id,{
 					data:{},
 					dataType: 'json',	// 服务器返回json格式数据
 					type: 'post', 	// HTTP请求类型
@@ -380,7 +380,7 @@
 			function fetchContactList() {
 				var user = app.getUserGlobalInfo();
 				// 查询用户好友列表
-				mui.ajax(app.serverUrl + "/u/myFriends?userId=" + user.id,{
+				mui.ajax(app.serverUrl + "/friends/myFriends?userId=" + user.id,{
 					data:{},
 					dataType: 'json',	// 服务器返回json格式数据
 					type: 'post', 	// HTTP请求类型
@@ -401,7 +401,7 @@
 				// 获取用户全局对象
 				var user = app.getUserGlobalInfo();
 				
-				mui.ajax(app.serverUrl + "/u/queryFriendRequests?userId=" + user.id,{
+				mui.ajax(app.serverUrl + "/friends/queryFriendRequests?userId=" + user.id,{
 					data:{},
 					dataType: 'json',	// 服务器返回json格式数据
 					type: 'post', 	// HTTP请求类型
