@@ -187,10 +187,10 @@
 					
 					var me = app.getUserGlobalInfo();
 					// 构建ChatMsg
-					var chatMsg = new app.ChatMsg(me.id, null, null, null);
+					var chatMessage = new app.ChatMessage(me.id, null, null, null);
 					
 					// 构建DataContent
-					var dataContent = new app.DataContent(app.CONNECT, chatMsg, null);
+					var dataContent = new app.DataContent(app.CONNECT, chatMessage, null);
 					// 发送websocket
 					CHAT.chat(JSON.stringify(dataContent));
 					
@@ -217,10 +217,10 @@
 					}
 					
 					// 若不是重新拉取好友列表，则获取聊天消息模型，渲染接收到的聊天记录
-					var chatMsg = dataContent.chatMsg;
-					var msg = chatMsg.msg;
-					var friendUserId = chatMsg.senderId;
-					var myId = chatMsg.receiverId;
+					var chatMessage = dataContent.chatMessage;
+					var msg = chatMessage.msg;
+					var friendUserId = chatMessage.senderId;
+					var myId = chatMessage.receiverId;
 					
 					// 调用聊天webview的receiveMsg方法
 					//var chatWebview = plus.webview.getWebviewById("chatting-181125AG577R4PX4");
@@ -234,7 +234,7 @@
 					}
 					
 					// 接受到消息之后，对消息记录进行签收
-					var dataContentSign = new app.DataContent(app.SIGNED, null, chatMsg.msgId);
+					var dataContentSign = new app.DataContent(app.SIGNED, null, chatMessage.msgId);
 					CHAT.chat(JSON.stringify(dataContentSign));
 					
 					// 保存聊天历史记录到本地缓存

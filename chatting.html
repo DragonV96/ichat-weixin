@@ -143,9 +143,9 @@
 					send.setAttribute("class", "mui-btn-gray");
 					
 					// 构建ChatMsg
-					var chatMsg = new app.ChatMsg(me.id, friendUserId, msg_text_val, null);
+					var chatMessage = new app.ChatMessage(me.id, friendUserId, msg_text_val, null);
 					// 构建DataContent
-					var dataContent = new app.DataContent(app.CHAT, chatMsg, null);
+					var dataContent = new app.DataContent(app.CHAT, chatMessage, null);
 					
 					// 调用websocket 发送消息到netty后端
 					var wsWebview = plus.webview.getWebviewById("ichat-chatlist.html");
