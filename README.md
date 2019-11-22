@@ -39,6 +39,7 @@
 - 数据库 MariaDB/mysql HikariCP 2.7.9
 - 文件服务器 nginx 1.12.0 fastdfs 5.05
 - 前端框架 MUI H5plus
+- 简化对象封装工具Lombok
 
 # 实现功能
 
